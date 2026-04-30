@@ -70,15 +70,15 @@ Every command is a single English word. The binary is three letters: `ryp`.
 
 ```bash
 # Automated (recommended)
-curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/install.sh | bash
 
 # From source
-git clone https://github.com/Karmanya03/rypton.git && cd rypton
+git clone https://github.com/Karmanya03/Rypton.git && cd Rypton
 cargo install --locked --path .
 
 # Update / Uninstall
-curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/update.sh | bash
-curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/uninstall.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/update.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/uninstall.sh | bash
 ```
 
 ## Quick Start
@@ -227,6 +227,7 @@ A: No, my friend, it is working exactly as intended. You literally locked the fi
 ---
 
 <p align="center">
-  Because sleeping soundly requires assuming the entire internet is actively trying to ruin your life. <br />
-  <i>Stay paranoid, my friends.</i>
+  <br />
+  <strong><code>Rypton</code>: Because "Trust Me Bro" is not a valid security architecture. 🛡️</strong><br />
+  <i>Encrypt it all. Lock it down. Go drink some water.</i>
 </p>
