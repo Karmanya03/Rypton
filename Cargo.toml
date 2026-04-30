@@ -1,0 +1,66 @@
+[package]
+name = "rypton"
+version = "0.1.0"
+edition = "2024"
+authors = ["Karmanya03"]
+description = "Kernel-level, tamper-proof secrets vault and system credential guardian for Linux."
+license = "MIT"
+repository = "https://github.com/Karmanya03/Rypton"
+readme = "README.md"
+keywords = ["encryption", "vault", "security", "cli", "secrets"]
+categories = ["command-line-utilities", "cryptography"]
+
+[[bin]]
+name = "ryp"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive", "color"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Encryption
+chacha20poly1305 = "0.10"
+argon2 = "0.5"
+hkdf = "0.12"
+sha2 = "0.10"
+blake3 = "1"
+
+# Security
+zeroize = { version = "1", features = ["derive"] }
+rand = "0.8"
+
+# Filesystem / Dirs
+dirs = "5"
+walkdir = "2"
+glob = "0.3"
+libc = "0.2"
+
+# TUI
+ratatui = { version = "0.29", features = ["crossterm"] }
+crossterm = "0.28"
+
+# UX
+indicatif = "0.17"
+colored = "2"
+dialoguer = "0.11"
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
+
+# UUID for vault item IDs
+uuid = { version = "1", features = ["v4"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+codegen-units = 1
+panic = "abort"
