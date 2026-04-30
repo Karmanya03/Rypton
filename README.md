@@ -6,7 +6,7 @@
 
 <p align="center">
 	<strong>Kernel-level, tamper-proof secrets vault and system credential guardian for Linux.</strong><br />
-	Three letters. One command. Your system's credentials locked down with kernel-grade immutable flags, BLAKE3 integrity monitoring, and real-time tamper detection — because <code>/etc/shadow</code> in plaintext is not a configuration choice, it's a liability.
+	Three letters. One command. Your system's credentials locked down with kernel-grade immutable flags, BLAKE3 integrity monitoring, and real-time tamper detection -because <code>/etc/shadow</code> in plaintext is not a configuration choice, it's a liability.
 </p>
 
 <p align="center">
@@ -37,7 +37,7 @@
 
 **Rypton** (`ryp`) is a kernel-level, tamper-proof secrets vault, system-wide security scanner, and credential guardian for Linux workstations.
 
-It doesn't just encrypt files — it uses Linux kernel primitives (`chattr +i` immutable flags), BLAKE3 integrity baselines, and real-time polling to make system credentials tamper-proof. It scans your entire system for SUID/SGID binaries, Linux capabilities, world-writable files, and unencrypted secrets, then generates professional reports with risk grades and remediation steps. Critical findings trigger desktop notifications instantly.
+It doesn't just encrypt files -it uses Linux kernel primitives (`chattr +i` immutable flags), BLAKE3 integrity baselines, and real-time polling to make system credentials tamper-proof. It scans your entire system for SUID/SGID binaries, Linux capabilities, world-writable files, and unencrypted secrets, then generates professional reports with risk grades and remediation steps. Critical findings trigger desktop notifications instantly.
 
 Every command is a single English word. The binary is three letters: `ryp`.
 
@@ -132,16 +132,16 @@ Every command is a single word. No subcommands. No flags to memorize.
 
 The scanner performs a 6-phase system-wide security audit:
 
-1. **SUID/SGID binaries** — Walks `/usr`, `/bin`, `/sbin`, `/opt`, etc. Flags unknown SUID/SGID binaries while whitelisting known system tools.
-2. **Linux capabilities** — Runs `getcap` across binary directories. Flags dangerous capabilities like `cap_setuid`, `cap_sys_admin`.
-3. **World-writable files** — Detects writable files in sensitive locations and directories missing sticky bits.
-4. **System credential permissions** — Audits 20+ system files against expected permission masks.
-5. **Unencrypted secrets** — Scans for SSH keys, AWS creds, kube configs, vault tokens, `.env` files.
-6. **Unowned files** — Finds orphaned files with no valid UID/GID.
+1. **SUID/SGID binaries** -Walks `/usr`, `/bin`, `/sbin`, `/opt`, etc. Flags unknown SUID/SGID binaries while whitelisting known system tools.
+2. **Linux capabilities** -Runs `getcap` across binary directories. Flags dangerous capabilities like `cap_setuid`, `cap_sys_admin`.
+3. **World-writable files** -Detects writable files in sensitive locations and directories missing sticky bits.
+4. **System credential permissions** -Audits 20+ system files against expected permission masks.
+5. **Unencrypted secrets** -Scans for SSH keys, AWS creds, kube configs, vault tokens, `.env` files.
+6. **Unowned files** -Finds orphaned files with no valid UID/GID.
 
 ### Desktop Notifications
 
-Critical and high-risk findings trigger `notify-send` desktop alerts automatically. No configuration needed — if your desktop supports FreeDesktop notifications, you'll see them.
+Critical and high-risk findings trigger `notify-send` desktop alerts automatically. No configuration needed -if your desktop supports FreeDesktop notifications, you'll see them.
 
 ### Reports
 
@@ -149,11 +149,11 @@ Every scan generates a timestamped Markdown report in `~/.rypton/reports/` with:
 
 - **Risk grade** (A+ through F) and numeric score
 - **Executive summary** with finding counts by severity
-- **Attack vector analysis** — what could be targeted
-- **Protection matrix** — what Rypton can/cannot fix
-- **Impact assessment** — what exploitation could cause
+- **Attack vector analysis** -what could be targeted
+- **Protection matrix** -what Rypton can/cannot fix
+- **Impact assessment** -what exploitation could cause
 - **Detailed findings** by category with per-item risk levels
-- **Remediation commands** — copy-paste `ryp` commands
+- **Remediation commands** -copy-paste `ryp` commands
 
 Reports auto-accumulate. The latest is always at `~/.rypton/reports/latest.md`.
 
@@ -201,7 +201,7 @@ Encrypted Blob
 ## FAQ
 
 **Q: What makes this "kernel-level"?**
-A: The `chattr +i` immutable flag is enforced by the Linux kernel's VFS layer. Once set, the file cannot be modified, deleted, or renamed by any process — including root. Combined with BLAKE3 baselines and real-time polling, this is defense-in-depth from the kernel up. Basically, we tell the kernel to treat your files like a toddler treats their favorite toy: "MINE. NO TOUCH."
+A: The `chattr +i` immutable flag is enforced by the Linux kernel's VFS layer. Once set, the file cannot be modified, deleted, or renamed by any process -including root. Combined with BLAKE3 baselines and real-time polling, this is defense-in-depth from the kernel up. Basically, we tell the kernel to treat your files like a toddler treats their favorite toy: "MINE. NO TOUCH."
 
 **Q: Will the scanner slow down my system?**
 A: No. The scanner uses metadata-only checks (no file content reading for SUID/SGID/permissions), limits walk depth, and skips virtual filesystems (`/proc`, `/sys`, `/dev`). Typical scan completes faster than you can say "Wait, did I leave port 22 open to the entire internet?"
