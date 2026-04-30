@@ -43,42 +43,42 @@ Every command is a single English word. The binary is three letters: `ryp`.
 
 ### What it protects
 
-| Category | Files | How |
-|---|---|---|
-| **System auth** | `/etc/shadow`, `/etc/passwd`, `/etc/gshadow` | Encrypt + vault + immutable lock |
-| **SSH host keys** | `/etc/ssh/ssh_host_*` | Integrity baseline + immutable flag |
-| **Sudoers** | `/etc/sudoers`, `/etc/sudoers.d/*` | Kernel-enforced immutability |
-| **TLS keys** | `/etc/ssl/private/*` | Encrypted backup + lock |
-| **PAM configs** | `/etc/pam.d/*` | Baseline + tamper detection |
-| **User SSH keys** | `~/.ssh/id_*` | Encrypted vault storage |
-| **Config files** | `~/.config/*`, `~/.env`, `~/.aws/*` | Encrypted vault storage |
-| **Entire folders** | Any directory tree | Recursive encryption |
+| Category           | Files                                        | How                                 |
+| ------------------ | -------------------------------------------- | ----------------------------------- |
+| **System auth**    | `/etc/shadow`, `/etc/passwd`, `/etc/gshadow` | Encrypt + vault + immutable lock    |
+| **SSH host keys**  | `/etc/ssh/ssh_host_*`                        | Integrity baseline + immutable flag |
+| **Sudoers**        | `/etc/sudoers`, `/etc/sudoers.d/*`           | Kernel-enforced immutability        |
+| **TLS keys**       | `/etc/ssl/private/*`                         | Encrypted backup + lock             |
+| **PAM configs**    | `/etc/pam.d/*`                               | Baseline + tamper detection         |
+| **User SSH keys**  | `~/.ssh/id_*`                                | Encrypted vault storage             |
+| **Config files**   | `~/.config/*`, `~/.env`, `~/.aws/*`          | Encrypted vault storage             |
+| **Entire folders** | Any directory tree                           | Recursive encryption                |
 
 ### What it scans for
 
-| Scanner | Detects |
-|---|---|
-| **SUID/SGID** | Unknown setuid/setgid binaries (privilege escalation vectors) |
-| **Capabilities** | `cap_setuid`, `cap_sys_admin`, `cap_dac_override`, etc. |
-| **World-writable** | Files any user can modify in sensitive locations |
-| **Sticky bit** | World-writable dirs missing sticky bit |
-| **Weak permissions** | System credentials with overly permissive modes |
-| **Unencrypted secrets** | SSH keys, AWS creds, kube configs, .env files, API tokens |
-| **Unowned files** | Orphaned files with no valid UID/GID |
+| Scanner                 | Detects                                                       |
+| ----------------------- | ------------------------------------------------------------- |
+| **SUID/SGID**           | Unknown setuid/setgid binaries (privilege escalation vectors) |
+| **Capabilities**        | `cap_setuid`, `cap_sys_admin`, `cap_dac_override`, etc.       |
+| **World-writable**      | Files any user can modify in sensitive locations              |
+| **Sticky bit**          | World-writable dirs missing sticky bit                        |
+| **Weak permissions**    | System credentials with overly permissive modes               |
+| **Unencrypted secrets** | SSH keys, AWS creds, kube configs, .env files, API tokens     |
+| **Unowned files**       | Orphaned files with no valid UID/GID                          |
 
 ## Installation
 
 ```bash
 # Automated (recommended)
-curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/install.sh | bash
 
 # From source
-git clone https://github.com/Karmanya03/Rypton.git && cd Rypton
+git clone https://github.com/Karmanya03/rypton.git && cd rypton
 cargo install --locked --path .
 
 # Update / Uninstall
-curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/main/scripts/update.sh | bash
-curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/main/scripts/uninstall.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/update.sh | bash
+curl -sSL https://raw.githubusercontent.com/Karmanya03/rypton/master/scripts/uninstall.sh | bash
 ```
 
 ## Quick Start
@@ -106,27 +106,27 @@ ryp tui                               # Interactive TUI
 
 Every command is a single word. No subcommands. No flags to memorize.
 
-| Command | What It Does |
-|---|---|
-| `ryp init` | Initialize vault |
-| `ryp add <path>` | Encrypt and store a file (auto-detects type) |
-| `ryp list` | List all vault items |
-| `ryp get <id> [-o path]` | Decrypt and retrieve |
-| `ryp rm <id>` | Remove from vault |
-| `ryp encrypt <folder>` | Encrypt entire directory |
-| `ryp decrypt <id> -o <dir>` | Restore encrypted folder |
-| `ryp lock <path>` | Set kernel immutable flag (`chattr +i`) |
-| `ryp unlock <path>` | Remove kernel immutable flag |
-| `ryp protect <path> [--lock]` | Encrypt + vault + optional lock |
-| `ryp restore <id>` | Restore system file from vault |
-| `ryp scan` | Full system security scan (SUID/SGID/caps/perms/secrets) |
-| `ryp baseline` | Create BLAKE3 integrity baseline |
-| `ryp verify` | Verify against baseline |
-| `ryp watch [--interval N]` | Real-time tamper monitor with desktop notifications |
-| `ryp report` | Generate professional security report |
-| `ryp rekey` | Change master password |
-| `ryp status` | Vault + system health dashboard |
-| `ryp tui` | Interactive TUI |
+| Command                       | What It Does                                             |
+| ----------------------------- | -------------------------------------------------------- |
+| `ryp init`                    | Initialize vault                                         |
+| `ryp add <path>`              | Encrypt and store a file (auto-detects type)             |
+| `ryp list`                    | List all vault items                                     |
+| `ryp get <id> [-o path]`      | Decrypt and retrieve                                     |
+| `ryp rm <id>`                 | Remove from vault                                        |
+| `ryp encrypt <folder>`        | Encrypt entire directory                                 |
+| `ryp decrypt <id> -o <dir>`   | Restore encrypted folder                                 |
+| `ryp lock <path>`             | Set kernel immutable flag (`chattr +i`)                  |
+| `ryp unlock <path>`           | Remove kernel immutable flag                             |
+| `ryp protect <path> [--lock]` | Encrypt + vault + optional lock                          |
+| `ryp restore <id>`            | Restore system file from vault                           |
+| `ryp scan`                    | Full system security scan (SUID/SGID/caps/perms/secrets) |
+| `ryp baseline`                | Create BLAKE3 integrity baseline                         |
+| `ryp verify`                  | Verify against baseline                                  |
+| `ryp watch [--interval N]`    | Real-time tamper monitor with desktop notifications      |
+| `ryp report`                  | Generate professional security report                    |
+| `ryp rekey`                   | Change master password                                   |
+| `ryp status`                  | Vault + system health dashboard                          |
+| `ryp tui`                     | Interactive TUI                                          |
 
 ## System Scanner
 
@@ -187,16 +187,16 @@ Encrypted Blob
 
 ## Security Model
 
-| Layer | Primitive |
-|---|---|
+| Layer          | Primitive                            |
+| -------------- | ------------------------------------ |
 | Password → Key | Argon2id (64 MiB, 3 iter, 4 threads) |
-| Key Derivation | HKDF-SHA256 per-file |
-| Encryption | XChaCha20-Poly1305 AEAD |
-| Integrity | BLAKE3 pre-encryption + baseline |
-| Memory | zeroize on drop |
-| Tamper-proof | `chattr +i` kernel immutable flag |
-| Detection | Real-time polling + desktop alerts |
-| Scanning | SUID/SGID/caps/world-write/secrets |
+| Key Derivation | HKDF-SHA256 per-file                 |
+| Encryption     | XChaCha20-Poly1305 AEAD              |
+| Integrity      | BLAKE3 pre-encryption + baseline     |
+| Memory         | zeroize on drop                      |
+| Tamper-proof   | `chattr +i` kernel immutable flag    |
+| Detection      | Real-time polling + desktop alerts   |
+| Scanning       | SUID/SGID/caps/world-write/secrets   |
 
 ## FAQ
 
@@ -227,5 +227,6 @@ A: No, my friend, it is working exactly as intended. You literally locked the fi
 ---
 
 <p align="center">
-  Built by <a href="https://github.com/Karmanya03">Karmanya</a> with caffeine and kernel-level paranoia.
+  Because sleeping soundly requires assuming the entire internet is actively trying to ruin your life. <br />
+  <i>Stay paranoid, my friends.</i>
 </p>
