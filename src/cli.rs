@@ -26,6 +26,8 @@ pub struct Cli {
 pub enum Commands {
     /// Initialize a new vault
     Init,
+    /// Auto-detect and protect system credentials and user secrets
+    Shield,
     /// Add a file to the vault (auto-detects type)
     Add {
         /// File to encrypt and store
@@ -173,6 +175,7 @@ pub fn dispatch(cli: Cli) -> Result<()> {
 
     match cli.command {
         Commands::Init => cmd_init(),
+        Commands::Shield => cmd_shield(),
         Commands::Add { path, r#type } => cmd_add(path, r#type),
         Commands::List => cmd_list(),
         Commands::Get { id, output } => cmd_get(id, output),
@@ -219,6 +222,117 @@ fn cmd_init() -> Result<()> {
     }
     vault::init_vault(&password)?;
     println!("{}", "[+] Vault initialized at ~/.rypton".bright_green());
+
+    // Ask to auto-shield
+    if Confirm::new()
+        .with_prompt("Do you want to automatically find and protect standard system credentials & secrets? (ryp shield)")
+        .default(true)
+        .interact()?
+    {
+        cmd_shield()?;
+    }
+
+    Ok(())
+}
+
+fn cmd_shield() -> Result<()> {
+    banner();
+    println!("{}", "[*] Engaging Rypton Auto-Shield...".bright_yellow());
+
+    let master = vault::unlock_vault(&pw("Master password")?)?;
+    let mut protected_count = 0;
+
+    // 1. Protect core system files (if root)
+    if system_guard::is_root() {
+        println!(
+            "{}",
+            "    Shielding kernel-level system credentials...".bright_cyan()
+        );
+        let creds = system_guard::system_credential_registry();
+        for cred in creds {
+            let p = std::path::PathBuf::from(&cred.path);
+            if p.exists() {
+                match system_guard::protect_file(&master, &p, true) {
+                    Ok(_) => {
+                        println!(
+                            "    {} Locked & Vaulted: {}",
+                            "[+]".bright_green(),
+                            cred.path
+                        );
+                        protected_count += 1;
+                    }
+                    Err(e) => println!(
+                        "    {} Failed to protect {}: {}",
+                        "[-]".bright_red(),
+                        cred.path,
+                        e
+                    ),
+                }
+            }
+        }
+    } else {
+        println!(
+            "{}",
+            "    [i] Not running as root. Skipping /etc/ system credential lockdown..."
+                .bright_yellow()
+        );
+    }
+
+    // 2. Vault user secrets (SSH keys, AWS, etc)
+    println!(
+        "{}",
+        "    Scanning home directory for common unencrypted secrets...".bright_cyan()
+    );
+    if let Some(home) = dirs::home_dir() {
+        let targets = [
+            ".ssh/id_rsa",
+            ".ssh/id_ed25519",
+            ".ssh/id_ecdsa",
+            ".aws/credentials",
+            ".kube/config",
+            ".docker/config.json",
+            ".netrc",
+            ".pgpass",
+            ".vault-token",
+            ".env",
+        ];
+
+        for t in targets {
+            let p = home.join(t);
+            if p.exists() {
+                let vtype = auto_type(&p);
+                match vault::add_file(&master, &p, vtype) {
+                    Ok(_) => {
+                        println!("    {} Backed up to Vault: {}", "[+]".bright_green(), t);
+                        protected_count += 1;
+                    }
+                    Err(e) => println!("    {} Failed to vault {}: {}", "[-]".bright_red(), t, e),
+                }
+            }
+        }
+    }
+
+    if protected_count > 0 {
+        println!(
+            "\n{}",
+            format!(
+                "[*] Shield complete! Successfully protected {} items.",
+                protected_count
+            )
+            .bright_green()
+            .bold()
+        );
+        println!(
+            "    {} We recommend running `sudo ryp baseline` next.",
+            "[i]".bright_cyan()
+        );
+    } else {
+        println!(
+            "\n{}",
+            "[!] Shield complete. No default standard secrets found or accessible.".bright_yellow()
+        );
+    }
+
     Ok(())
 }
 

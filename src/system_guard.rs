@@ -132,7 +132,21 @@ pub fn system_credential_registry() -> Vec<SystemCredential> {
         sc(
             "/etc/pam.d/common-password",
             "pam",
-            "PAM common password rules",
+            "PAM common password rules (Debian/Ubuntu)",
+            0o644,
+            false,
+        ),
+        sc(
+            "/etc/pam.d/system-auth",
+            "pam",
+            "PAM system auth rules (RHEL/CentOS/Arch)",
+            0o644,
+            false,
+        ),
+        sc(
+            "/etc/pam.d/password-auth",
+            "pam",
+            "PAM password auth rules (RHEL/CentOS)",
             0o644,
             false,
         ),
