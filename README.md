@@ -69,14 +69,16 @@ Every command is a single English word. The binary is three letters: `ryp`.
 ## Installation
 
 ```bash
-# Automated (recommended)
+# Via Crates.io (recommended)
+cargo install rypton
+
+# You may need to add cargo to your PATH if you haven't already:
+# export PATH="$HOME/.cargo/bin:$PATH"
+
+# Automated via Bash Script
 curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/install.sh | bash
 
-# From source
-git clone https://github.com/Karmanya03/Rypton.git && cd Rypton
-cargo install --locked --path .
-
-# Update / Uninstall
+# Update / Uninstall via Bash Scripts
 curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/update.sh | bash
 curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/uninstall.sh | bash
 ```
@@ -85,6 +87,7 @@ curl -sSL https://raw.githubusercontent.com/Karmanya03/Rypton/master/scripts/uni
 
 ```bash
 ryp init                              # Create your vault
+sudo ryp shield                       # Auto-detect & vault system credentials + user secrets
 ryp add ~/.ssh/id_ed25519             # Vault your SSH key (auto-detects type)
 ryp add ~/.config/app/api_token       # Vault a config file
 ryp encrypt ~/lab/ctf                 # Encrypt entire folder
@@ -109,6 +112,7 @@ Every command is a single word. No subcommands. No flags to memorize.
 | Command                       | What It Does                                             |
 | ----------------------------- | -------------------------------------------------------- |
 | `ryp init`                    | Initialize vault                                         |
+| `sudo ryp shield`             | Auto-detect, vault, and lockdown standard Linux secrets  |
 | `ryp add <path>`              | Encrypt and store a file (auto-detects type)             |
 | `ryp list`                    | List all vault items                                     |
 | `ryp get <id> [-o path]`      | Decrypt and retrieve                                     |

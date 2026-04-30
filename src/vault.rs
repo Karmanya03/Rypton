@@ -199,10 +199,21 @@ pub fn add_file(master: &MasterKey, path: &Path, item_type: VaultItemType) -> Re
 
     // Write index metadata
     let meta_json = serde_json::to_string_pretty(&item)?;
-    fs::write(root.join("index").join(format!("{}.json", id)), meta_json)?;
+    let meta_path = root.join("index").join(format!("{}.json", id));
+    let blob_path = root.join("vault").join(format!("{}.blob", id));
+    let salt_path = root.join("vault").join(format!("{}.salt", id));
 
+    fs::write(&meta_path, meta_json)?;
+    
     // Save the per-file salt alongside the blob
-    fs::write(root.join("vault").join(format!("{}.salt", id)), &salt)?;
+    fs::write(&salt_path, &salt)?;
+
+    // Anti-tamper vault self-protection
+    if crate::system_guard::is_root() {
+        let _ = crate::system_guard::set_immutable(&blob_path);
+        let _ = crate::system_guard::set_immutable(&meta_path);
+        let _ = crate::system_guard::set_immutable(&salt_path);
+    }
 
     Ok(item)
 }
@@ -350,14 +361,20 @@ pub fn remove_item(id: &str) -> Result<()> {
     let salt_path = root.join("vault").join(format!("{}.salt", id));
     let meta_path = root.join("index").join(format!("{}.json", id));
 
+    if crate::system_guard::is_root() {
+        let _ = crate::system_guard::clear_immutable(&blob_path);
+        let _ = crate::system_guard::clear_immutable(&meta_path);
+        let _ = crate::system_guard::clear_immutable(&salt_path);
+    }
+
     if meta_path.exists() {
-        fs::remove_file(meta_path)?;
+        fs::remove_file(&meta_path)?;
     }
     if blob_path.exists() {
-        fs::remove_file(blob_path)?;
+        fs::remove_file(&blob_path)?;
     }
     if salt_path.exists() {
-        fs::remove_file(salt_path)?;
+        fs::remove_file(&salt_path)?;
     }
 
     Ok(())
@@ -396,16 +413,23 @@ pub fn rekey_vault(old_password: &str, new_password: &str) -> Result<u32> {
         let new_master = crypto::derive_master_key(new_password, &vault_salt)?;
         let file_key = crypto::derive_file_key(&new_master, &new_salt, &item.id)?;
 
+        let blob_path = root.join("vault").join(format!("{}.blob", item.id));
+        let salt_path = root.join("vault").join(format!("{}.salt", item.id));
+
+        if crate::system_guard::is_root() {
+            let _ = crate::system_guard::clear_immutable(&blob_path);
+            let _ = crate::system_guard::clear_immutable(&salt_path);
+        }
+
         // Re-encrypt
         let blob = crypto::encrypt(&plaintext, &file_key)?;
-        fs::write(
-            root.join("vault").join(format!("{}.blob", item.id)),
-            blob.to_bytes(),
-        )?;
-        fs::write(
-            root.join("vault").join(format!("{}.salt", item.id)),
-            &new_salt,
-        )?;
+        fs::write(&blob_path, blob.to_bytes())?;
+        fs::write(&salt_path, &new_salt)?;
+
+        if crate::system_guard::is_root() {
+            let _ = crate::system_guard::set_immutable(&blob_path);
+            let _ = crate::system_guard::set_immutable(&salt_path);
+        }
 
         count += 1;
         pb.inc(1);

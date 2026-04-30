@@ -121,7 +121,7 @@ pub enum ItemType {
 
 fn banner() {
     println!(
-        "{}",
+        "{}\n{}\n{}",
         r#"
   ██████╗ ██╗   ██╗██████╗
   ██╔══██╗╚██╗ ██╔╝██╔══██╗
@@ -130,7 +130,13 @@ fn banner() {
   ██║  ██║   ██║   ██║
   ╚═╝  ╚═╝   ╚═╝   ╚═╝
 "#
-        .bright_cyan()
+        .bright_green()
+        .bold(),
+        " [ KERNEL-GRADE IMMUTABLE SECRETS VAULT ] "
+            .on_bright_green()
+            .black()
+            .bold(),
+        "──────────────────────────────────────────".bright_cyan()
     );
 }
 

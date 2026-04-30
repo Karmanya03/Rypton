@@ -2,15 +2,23 @@
 set -e
 
 echo ""
-echo "  ██████╗ ██╗   ██╗██████╗"
-echo "  ██╔══██╗╚██╗ ██╔╝██╔══██╗"
-echo "  ██████╔╝ ╚████╔╝ ██████╔╝"
-echo "  ██╔══██╗  ╚██╔╝  ██╔═══╝"
-echo "  ██║  ██║   ██║   ██║"
-echo "  ╚═╝  ╚═╝   ╚═╝   ╚═╝"
+echo -e "\e[1;32m ██████  ██    ██ ██████ \e[0m"
+echo -e "\e[1;32m ██   ██  ██  ██  ██   ██\e[0m"
+echo -e "\e[1;32m ██████    ████   ██████ \e[0m"
+echo -e "\e[1;32m ██   ██    ██    ██     \e[0m"
+echo -e "\e[1;32m ██   ██    ██    ██     \e[0m"
+echo -e "\e[1;30;42m [ KERNEL-GRADE IMMUTABLE SECRETS VAULT ] \e[0m"
+echo -e "\e[1;36m──────────────────────────────────────────\e[0m"
 echo ""
 echo "  [*] Installing Rypton (ryp) via Cargo..."
 echo ""
+
+if command -v ryp &> /dev/null; then
+    echo "  [!] Rypton (ryp) is already installed."
+    echo "  [!] Use 'ryp --version' to check the version."
+    echo "  [!] If you want to update, run the update script instead."
+    exit 0
+fi
 
 # Check for Rust/Cargo
 if ! command -v cargo &> /dev/null; then
